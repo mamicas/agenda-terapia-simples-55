@@ -6,8 +6,9 @@ import AppointmentConfirmation from '@/components/AppointmentConfirmation';
 import PaymentScreen from '@/components/PaymentScreen';
 import ConfirmationScreen from '@/components/ConfirmationScreen';
 import TopBar from '@/components/TopBar';
+import PatientDataConfirmation from '@/components/PatientDataConfirmation';
 
-type AppState = 'login' | 'dashboard' | 'sessions' | 'confirmation' | 'payment' | 'success';
+type AppState = 'login' | 'patient-data' | 'dashboard' | 'sessions' | 'confirmation' | 'payment' | 'success';
 
 const Index = () => {
   console.log('Index.tsx renderizando - Debug');
@@ -23,6 +24,10 @@ const Index = () => {
 
   const handleLogin = (email: string, password: string) => {
     console.log('Login:', { email, password });
+    setCurrentState('patient-data');
+  };
+
+  const handlePatientDataConfirm = () => {
     setCurrentState('dashboard');
   };
 
@@ -68,28 +73,42 @@ const Index = () => {
     setCurrentState('dashboard');
   };
 
+  const handleBackFromPatientData = () => {
+    setCurrentState('patient-data');
+  };
+
   return (
     <div className="font-inter">
       {currentState === 'login' && (
         <Login onLogin={handleLogin} />
       )}
+
+      {currentState === 'patient-data' && (
+        <PatientDataConfirmation onConfirm={handlePatientDataConfirm} />
+      )}
       
-      {currentState !== 'login' && (
+      {currentState !== 'login' && currentState !== 'patient-data' && (
         <TopBar
           title={
+            currentState === 'dashboard' ? 'Agendamento' :
             currentState === 'sessions' ? 'Minhas Sessões' :
             currentState === 'confirmation' ? 'Confirmar Agendamentos' :
             currentState === 'payment' ? 'Pagamento' :
             currentState === 'success' ? 'Confirmação' : undefined
           }
           subtitle={
+            currentState === 'dashboard' ? 'Escolha seus horários' :
             currentState === 'sessions' ? 'Histórico e próximas consultas' :
             currentState === 'confirmation' ? 'Revise suas sessões selecionadas' :
             currentState === 'payment' ? 'Finalize seu agendamento' :
             currentState === 'success' ? 'Agendamento realizado com sucesso' : undefined
           }
-          showBackButton={currentState === 'sessions' || currentState === 'confirmation'}
-          onBack={currentState === 'sessions' ? handleBackFromSessions : handleBackToConfirmation}
+          showBackButton={currentState === 'dashboard' || currentState === 'sessions' || currentState === 'confirmation'}
+          onBack={
+            currentState === 'dashboard' ? handleBackFromPatientData :
+            currentState === 'sessions' ? handleBackFromSessions : 
+            handleBackToConfirmation
+          }
           onMySessionsClick={currentState !== 'sessions' ? handleMySessionsClick : undefined}
           onLogout={handleLogout}
           currentPage={currentState === 'dashboard' ? 'dashboard' : currentState === 'sessions' ? 'sessions' : 'other'}
