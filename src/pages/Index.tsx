@@ -10,6 +10,8 @@ import TopBar from '@/components/TopBar';
 type AppState = 'login' | 'dashboard' | 'sessions' | 'confirmation' | 'payment' | 'success';
 
 const Index = () => {
+  console.log('Index.tsx renderizando - Debug');
+  
   const [currentState, setCurrentState] = useState<AppState>('login');
   const [selectedSlots, setSelectedSlots] = useState<Array<{
     date: string;
